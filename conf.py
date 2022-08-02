@@ -130,13 +130,6 @@ html_theme_options = {
     'titles_only': False
 }
 
-html_context = {
-	'display_github': True,
-	'github_user': 'netrisai',
-	'github_repo': 'docs',
-	'github_version': 'master/',
-}
-
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
 
@@ -332,10 +325,13 @@ autodoc_default_options = {
 	'undoc-members': True,
 }
 
-############################
-# SETUP THE RTD LOWER-LEFT #
-############################
-html_context['display_lower_left'] = True
+html_context = {
+	'display_github': True,
+	'github_user': 'netrisai',
+	'github_repo': 'docs',
+	'github_version': 'master/',
+	'display_lower_left': True,
+}
 
 from git import Repo
 repo = Repo( search_parent_directories=True )
@@ -362,17 +358,17 @@ language = 'en'
 html_context['language'] = language
 
 # POPULATE LINKS TO OTHER LANGUAGES
-html_context['languages'] = [ ('en', '/en/' +current_version+ '/') ]
+html_context['languages'] = [('en', f'/en/{current_version}/')]
 
 # POPULATE LINKS TO OTHER VERSIONS
-html_context['versions'] = list()
+html_context['versions'] = []
 
 # get list of remote branches, excluding HEAD and gh-pages
 remote_refs = repo.remote().refs
-versions = list()
+versions = []
 for ref in remote_refs:
 	ref = ref.name.split('/')[-1]
-	if ref != 'HEAD' and ref != 'gh-pages':
+	if ref not in ['HEAD', 'gh-pages']:
 		versions.append( ref )
 
 for version in versions:
@@ -381,27 +377,42 @@ for version in versions:
 	if version == 'master':
 		version = 'stable'
 
-	html_context['versions'].append( (version, '/docs/' +language+ '/' +version+ '/') )
+	html_context['versions'].append((version, f'/docs/{language}/{version}/'))
 
 # DOWNLOADS
 
 # settings for creating PDF with rinoh
-rinoh_documents = [(
- master_doc,
- 'ReadtheDocsTemplate',
- project+ ' Documentation',
- '© ' +copyright,
-)]
+rinoh_documents = [
+	(
+		master_doc,
+		'ReadtheDocsTemplate',
+		f'{project} Documentation',
+		f'© {copyright}',
+	)
+]
+
 rinoh_logo = 'images/logo-600.png'
 today_fmt = "%B %d, %Y"
 
 # settings for EPUB
 epub_basename = 'Netrisdocs'
 
-html_context['downloads'] = list()
-html_context['downloads'].append( ('pdf', '/docs/manifests/' +language+ '/' +current_version+ '/netris-docs_' +language+ '_' +current_version+ '.pdf') )
+html_context['downloads'] = []
+html_context['downloads'].append(
+	(
+		'pdf',
+		f'/docs/manifests/{language}/{current_version}/netris-docs_{language}_{current_version}.pdf',
+	)
+)
 
-html_context['downloads'].append( ('epub', '/docs/manifests/' +language+ '/' +current_version+ '/netris-docs_' +language+ '_' +current_version+ '.epub') )
+
+html_context['downloads'].append(
+	(
+		'epub',
+		f'/docs/manifests/{language}/{current_version}/netris-docs_{language}_{current_version}.epub',
+	)
+)
+
 
 # Variables
 
